@@ -1,0 +1,44 @@
+- name: < Play 1 > ==> DOWNLOAD & INSTALL THE SEMAPHORE PACKAGE
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: Downlaoding the semaphore rpm package...
+    ansible.builtin.get_url:
+      url: https://github.com/semaphoreui/semaphore/releases/download/v2.10.11/semaphore_2.10.11_linux_386.rpm
+      dest: /root
+      mode: '0550'
+  - name: installing the local semaphore rpm file...
+    yum:
+      name: /root/semaphore_2.10.11_linux_386.rpm
+      state: present
+
+- name: < Play 2 > ==> CONFIGURING THE SEMAPHORE SERVICES ON THE SYSTEM
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+    - name: Creating a semaphore services...
+      file: 
+      path: /etc/systemd/system/semaphore.service
+    - name: inserting the service configurations into the file...
+      line: [Unit]
+            Description=Semaphore Ansible
+            Documentation=https://github.com/semaphoreui/semaphore
+            Wants=network-online.target
+            After=network-online.target
+            [Service]
+            Type=simple
+            ExecReload=/bin/kill -HUP $MAINPID
+            ExecStart=/path/to/semaphore server --config=/path/to/config.json
+            SyslogIdentifier=semaphore
+            Restart=always
+            RestartSec=10s
+            [Install]
+            WantedBy=multi-user.target 
+    - name: Starting and enabling the semaphore services...
+      service:
+        name: semaphore
+        state: started
+        enabled: yes
+        
