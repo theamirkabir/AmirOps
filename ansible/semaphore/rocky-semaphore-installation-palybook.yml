@@ -22,20 +22,20 @@
       file: 
       path: /etc/systemd/system/semaphore.service
     - name: inserting the service configurations into the file...
-      line: [Unit]
-            Description=Semaphore Ansible
-            Documentation=https://github.com/semaphoreui/semaphore
-            Wants=network-online.target
-            After=network-online.target
-            [Service]
-            Type=simple
-            ExecReload=/bin/kill -HUP $MAINPID
-            ExecStart=/path/to/semaphore server --config=/path/to/config.json
-            SyslogIdentifier=semaphore
-            Restart=always
-            RestartSec=10s
-            [Install]
-            WantedBy=multi-user.target 
+      #line: [Unit] (to be completed later...)
+      #      Description=Semaphore Ansible
+      #     Documentation=https://github.com/semaphoreui/semaphore
+      #     Wants=network-online.target
+      #     After=network-online.target
+      #     [Service]
+      #     Type=simple
+      #     ExecReload=/bin/kill -HUP $MAINPID
+      #     ExecStart=/path/to/semaphore server --config=/path/to/config.json
+      #     SyslogIdentifier=semaphore
+      #     Restart=always
+      #     RestartSec=10s
+      #     [Install]
+      #     WantedBy=multi-user.target 
     - name: Starting and enabling the semaphore services...
       service:
         name: semaphore
