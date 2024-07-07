@@ -40,19 +40,19 @@
       name: epel-release
       state: present
     #- name: adding epel repository...
+  - name: add docker repository...
     #ansible.builtin.yum_repository:
     #name: epel
     #description: EPEL YUM repo
     #baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
-  - name: add docker repository...
     ansible.builtin.shell: yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
     #- name: adding docker-ce repository...
-    #ansible.builtin.yum_repository:
-    #name: docker-ce
-    #description: Docker CE Repository
-    #baseurl: https://download.docker.com/linux/centos/docker-ce.repo
-
 - name: < Play 3 > ==> INSTALL, RUN, ENABLE DOCKER SERVICES ON THE SYSTEM
+  #ansible.builtin.yum_repository:
+  #name: docker-ce
+  #description: Docker CE Repository
+  #baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
   hosts: all
   remote_user: ansible
   become: yes
