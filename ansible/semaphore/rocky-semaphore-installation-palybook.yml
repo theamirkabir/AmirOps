@@ -29,7 +29,6 @@
   - name: configuring the database...
     proxysql_query_rules:
 
-
 - name: < Play 2 > ==> CONFIGURING THE SEMAPHORE SERVICES ON THE SYSTEM
   hosts: all
   remote_user: ansible
@@ -63,3 +62,10 @@
       state: started
       enabled: yes
 
+- name: < Play 3 > ==> SETUP THE SEMAPHORE INITIAL CONGIGURATION
+  hosts: all
+  ansible_user: ansible
+  become: yes
+  tasks:
+  - name:
+  - name:
