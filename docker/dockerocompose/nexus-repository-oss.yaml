@@ -6,8 +6,19 @@ services:
     memory-reservation: 150m
     volumes:
       - "nexus-data:/nexus-data"
+    deploy:
+      resources:
+#        limits:
+#          cpus: '0.001'
+#          memory: 50M
+        reservations:
+          cpus: '1'
+          memory: 200M
     ports:
       - "8081:8081"
       - "8085:8085"
 volumes:
   nexus-data: {}
+
+
+
