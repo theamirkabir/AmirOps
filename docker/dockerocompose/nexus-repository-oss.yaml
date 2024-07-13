@@ -3,7 +3,6 @@ services:
   nexus:
     image: sonatype/nexus3
     restart: always
-    memory-reservation: 150m
     volumes:
       - "nexus-data:/nexus-data"
     deploy:
