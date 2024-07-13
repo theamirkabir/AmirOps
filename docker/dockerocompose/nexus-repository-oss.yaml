@@ -5,6 +5,9 @@ services:
     restart: always
     volumes:
       - "nexus-data:/nexus-data"
+    ports:
+      - "8081:8081"
+      - "8085:8085"
     deploy:
       resources:
 #        limits:
@@ -13,9 +16,6 @@ services:
         reservations:
           cpus: '1'
           memory: 200M
-    ports:
-      - "8081:8081"
-      - "8085:8085"
 volumes:
   nexus-data: {}
 
