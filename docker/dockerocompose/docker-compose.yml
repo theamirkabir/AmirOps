@@ -1,0 +1,23 @@
+version: '3'
+services:
+  nexus:
+    build:
+    depend_on:
+    restart: always
+    volumes:
+    working_dir:
+    environments:
+      -
+    ports:
+      - 
+    depoly:
+      resources:
+        limit:
+          cpu:
+          memory:
+        reservations:
+          cpu:
+          memory:
+    command:
+    
+    
