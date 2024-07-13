@@ -1,13 +1,17 @@
 version: '3'
 services:
   nexus:
+    container_name:
+    labels:
     build:
     depend_on:
+    links:
     restart: always
     volumes:
     working_dir:
     environments:
-      -
+      - 
+    dns:
     ports:
       - 
     depoly:
@@ -18,6 +22,7 @@ services:
         reservations:
           cpu:
           memory:
+    stop-grace-period:
+    healthcheck:
+    entrypoint:
     command:
-    
-    
