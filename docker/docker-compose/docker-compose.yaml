@@ -9,6 +9,7 @@ services:
     restart: always
     volumes:
     working_dir:
+    group_add:
     environments:
       - 
     dns:
