@@ -1,6 +1,7 @@
 version: "3"
 services:
   nexus:
+  container_name: nexus-oss-repo
     image: sonatype/nexus3
     restart: always
     volumes:
