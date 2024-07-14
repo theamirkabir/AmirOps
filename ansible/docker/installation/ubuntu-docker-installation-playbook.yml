@@ -1,0 +1,80 @@
+- name: < Play 1> ==> PURGING OLD DOCKER VERSIONS AND CLEANING THE SYSTEM OF IT'S OLD FILES IF DOCKER HAD EXISTS SOMEDAY
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: apt is removing all old docker related packages...
+    apt:
+      name:
+      - docker.io
+      - docker-doc
+      - docker-compose
+      - docker-compose-v2
+      - podman-docker
+      - containerd
+      - runc
+      state: absent
+  - name: removing old docker files may already exist on system...
+    ansible.builtin.file:
+      path: /var/lib/docker
+      state: absent
+  - name: removing containerd old files too...
+    file:
+      path: /var/lib/containerd
+      state: absent
+
+- name: < Play 2 > ==> CONFIGURING DOCKER REPOS AND EXTRA REQUIERED REPOS
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: installing curl, ca-certificates...
+    apt:
+      name:
+      - curl
+      - ca-certificates
+  - name: installing keyrings...
+    shell: install -m 0755 -d /etc/apt/keyrings
+  - name: curling the gpg key of docker repo...
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - name: adding a+r permission to the gpg key
+    ansible.builtin.file:
+      path: /etc/apt/keyrings/docker.asc
+      owner: root
+      group: root
+      mode: a+r
+    #- name: getting the gpg key using uri built-in module instead of shell (to be completed later)
+  - name: creating the repo file...
+    ansible.builtin.file:
+      path: /etc/apt/sources.list.d/docker.list
+      state: touch
+      mode: 0777
+  - name: cleaning the previuos repos if had exists...
+    ansible.builtin.shell: :> /etc/apt/sources.list.d/docker.list
+  - name: adding docker repo to the system...
+    #shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    #to be replaced later by a better module
+    raw: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+  - name: updating cache tables from newly added repository...
+    apt:
+      update_cache: true
+
+- name: < Play 3 > ==> INSTALL, RUN, ENABLE DOCKER SERVICES ON THE SYSTEM
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: installing docker packages...
+    apt:
+      name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      state: latest
+  - name: running docker services...
+    service:
+      name: docker
+      state: restarted
+      enabled: yes

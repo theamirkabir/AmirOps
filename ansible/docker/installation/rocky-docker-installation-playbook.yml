@@ -1,0 +1,73 @@
+- name: < Play 1 > ==> PURGING OLD DOCKER VERSIONS AND CLEANING THE SYSTEM OF IT'S OLD FILES IF DOCKER HAD EXISTS SOMEDAY
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: yum is removing all old docker related packages...
+    ansible.builtin.yum:
+      name:
+      - docker
+      - docker-common
+      - docker-latest
+      - docker-client
+      - docker-client-latest
+      - docker-logrotate
+      - docker-latest-logrotate
+      - docker-engine
+      - podman
+      - runc
+      state: absent
+  - name: removing old docker files may already exist on system...
+    ansible.builtin.file:
+      path: /var/lib/docker
+      state: absent
+  - name: removing containerd old files too...
+    file:
+      path: /var/lib/containerd
+      state: absent
+
+- name: < Play 2 > ==> CONFIGURING DOCKER REPOS AND EXTRA REQUIERED REPOS
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: installing yum-utils...
+    ansible.builtin.yum:
+      name: yum-utils
+      state: present
+  - name: adding epel repository...
+    ansible.builtin.yum:
+      name: epel-release
+      state: present
+    #- name: adding epel repository...
+  - name: add docker repository...
+    #ansible.builtin.yum_repository:
+    #name: epel
+    #description: EPEL YUM repo
+    #baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    ansible.builtin.shell: yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+    #- name: adding docker-ce repository...
+- name: < Play 3 > ==> INSTALL, RUN, ENABLE DOCKER SERVICES ON THE SYSTEM
+  #ansible.builtin.yum_repository:
+  #name: docker-ce
+  #description: Docker CE Repository
+  #baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: installing docker packages...
+    ansible.builtin.yum:
+      name:
+      - docker-ce
+      - docker-ce-cli
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      - containerd.io
+      state: latest
+  - name: running docker services...
+    ansible.builtin.service:
+      name: docker
+      state: restarted
+      enabled: yes
