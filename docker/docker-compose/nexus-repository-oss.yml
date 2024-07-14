@@ -9,6 +9,9 @@ services:
     ports:
       - "8081:8081"
       - "8085:8085"
+#    dns: -> if not mentioned it will be same as host namservers
+#      - 10.202.10.102
+#      - 10.202.10.202
     deploy:
       resources:
 #        limits:
