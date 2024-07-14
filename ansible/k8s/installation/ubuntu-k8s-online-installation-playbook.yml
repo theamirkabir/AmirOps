@@ -31,7 +31,7 @@
   - name: Allowing k8s services in ufw (udp)
     community.general.ufw:
       rull: allow
-      port: {? {item: ''} : ''}
+      port: "{ { item } }"
       proto: udp
     loop:
     - 4789
@@ -99,7 +99,7 @@
       state: restarted
       enabled: yes
 
-- name: < Play 5 > ==> INSTALLING KUBERNETES FINALLY
+- name: < Play 5 > ==> WE ARE GONNA INSTALL KUBERNETES PACKAGES FINALLY
   hosts: all
   remote_user: ansible
   become: yes
