@@ -1,0 +1,28 @@
+- name: < Play 1 > ==> PURGING OLD DOCKER VERSIONS AND CLEANING THE SYSTEM OF IT'S OLD FILES IF DOCKER HAD EXISTS SOMEDAY
+  hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+  - name: yum is removing all old docker related packages...
+    ansible.builtin.yum:
+      name:
+      - docker
+      - docker-common
+      - docker-latest
+      - docker-client
+      - docker-client-latest
+      - docker-logrotate
+      - docker-latest-logrotate
+      - docker-engine
+      - podman
+      - runc
+      state: absent
+  - name: removing old docker files may already exist on system...
+    ansible.builtin.file:
+      path: /var/lib/docker
+      state: absent
+  - name: removing containerd old files too...
+    file:
+      path: /var/lib/containerd
+      state: absent
+
